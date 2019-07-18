@@ -5,6 +5,9 @@ from bonobo.config import Option, use_context
 from collections import OrderedDict
 import requests
 import json
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 @use_context
@@ -28,9 +31,13 @@ class Smashing(Configurable, Writer):
             data[field_data] = vals[field_name]
         url = "%s/widgets/%s" % (self.server, self.widget)
         headers = {'Content-type': 'application/json'}
-        requests.post(
+        response = requests.post(
             url, data=json.dumps(data), headers=headers
-        ).raise_for_status()
+        )
+        try:
+            response.raise_for_status()
+        except requests.HTTPError:
+            _logger.warn(response.status_code)
         return NOT_MODIFIED
 
     __call__ = send
