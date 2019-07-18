@@ -31,13 +31,9 @@ class Smashing(Configurable, Writer):
             data[field_data] = vals[field_name]
         url = "%s/widgets/%s" % (self.server, self.widget)
         headers = {'Content-type': 'application/json'}
-        response = requests.post(
+        requests.post(
             url, data=json.dumps(data), headers=headers
         )
-        try:
-            response.raise_for_status()
-        except requests.HTTPError:
-            _logger.warn(response.status_code)
         return NOT_MODIFIED
 
     __call__ = send
