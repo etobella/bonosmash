@@ -1,0 +1,1 @@
+from .bonosmash import Smashing
